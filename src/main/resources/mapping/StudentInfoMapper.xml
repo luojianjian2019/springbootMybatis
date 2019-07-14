@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.luo.study003.mapper.StudentInfoMapper">
+    <resultMap id="BaseResultMap" type="com.luo.study003.entity.StudentInfo">
+        <result column="id" jdbcType="INTEGER" property="id" />
+        <result column="stu_no" jdbcType="VARCHAR" property="stuNo" />
+        <result column="stu_name" jdbcType="VARCHAR" property="stuName" />
+        <result column="stu_sex" jdbcType="BOOLEAN" property="stuSex" />
+        <result column="stu_age" jdbcType="INTEGER" property="stuAge" />
+        <result column="stu_birthday" jdbcType="TIMESTAMP" property="stuBirthday" />
+    </resultMap>
+
+    <sql id="studentParameter">
+        id,stu_no as stuNo,stu_name as stuName,stu_sex as stuSex,stu_age as stuAge,stu_birthday as stuBirthday
+    </sql>
+
+    <sql id="Base_Column_List">
+	    stu_no,stu_name,stu_sex,stu_age,stu_birthday
+    </sql>
+
+    <select id="getStuByStuNo" parameterType="Integer" resultMap="BaseResultMap">
+        select * from student_info where stu_no=#{StuNo}
+    </select>
+
+    <!--<select id="getAllStudent" resultType="com.luo.study003.entity.StudentInfo">
+        select id,stu_no as stuNo,stu_name as stuName,stu_sex as stuSex,stu_age as stuAge,stu_birthday as stuBirthday  from student_info
+    </select>-->
+
+    <select id="getAllStudent" resultType="com.luo.study003.entity.StudentInfo">
+        select <include refid="studentParameter"/> from student_info
+    </select>
+
+    <select id="getAllStudentByPage1" resultMap="BaseResultMap">
+        select * from student_info
+    </select>
+
+    <select id="getAllStudentByPage2" parameterType="map" resultMap="BaseResultMap">
+        select * from student_info limit #{start},#{limit}
+    </select>
+
+    <select id="getAllStudentByPage3" resultMap="BaseResultMap">
+        select * from student_info
+    </select>
+
+    <insert id="addStudent" parameterType="com.luo.study003.entity.StudentInfo">
+        insert into student_info(<include refid="Base_Column_List"/>) values
+        (
+        #{stuNo,jdbcType=VARCHAR},
+        #{stuName,jdbcType=VARCHAR},
+        #{stuSex,jdbcType=BOOLEAN},
+        #{stuAge,jdbcType=INTEGER},
+        #{stuBirthday,jdbcType=TIMESTAMP}
+         )
+    </insert>
+
+    <select id="getStudentByConditions" parameterType="com.luo.study003.entity.StudentInfo" resultMap="BaseResultMap">
+        select * from student_info where
+            <if test="stuNo != null">
+                stu_no = #{stuNo,jdbcType=VARCHAR}
+            </if>
+            <if test="stuSex != null">
+                and stu_sex = #{stuSex,jdbcType=BOOLEAN}
+            </if>
+    </select>
+
+    <update id="updateStudentByStuNo" parameterType="com.luo.study003.entity.StudentInfo">
+        update student_info set
+          <if test="stuNo != null">
+            stu_no = #{stuNo,jdbcType=VARCHAR},
+          </if>
+          <if test="stuSex != null">
+            stu_sex = #{stuSex,jdbcType=BOOLEAN}
+         </if>
+         where stu_no=#{stuNo}
+    </update>
+</mapper>
